@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Chirp;
 use Illuminate\Http\Request;
+use ProtoneMedia\Splade\Facades\Toast;
 
 class ChirpController extends Controller
 {
@@ -14,7 +15,9 @@ class ChirpController extends Controller
      */
     public function index()
     {
-        //
+        return view('chirps.index', [
+            'chirps' => Chirp::with('user')->latest()->get(),
+        ]);
     }
 
     /**
@@ -35,7 +38,15 @@ class ChirpController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'message' => 'required|string|max:255',
+        ]);
+ 
+        $request->user()->chirps()->create($validated);
+        Toast::title('Chirp Created!')
+            ->autoDismiss(1);
+ 
+        return redirect(route('chirps.index'));
     }
 
     /**
@@ -57,7 +68,7 @@ class ChirpController extends Controller
      */
     public function edit(Chirp $chirp)
     {
-        //
+        return view('chirps.edit', compact('chirp'));
     }
 
     /**
@@ -69,7 +80,17 @@ class ChirpController extends Controller
      */
     public function update(Request $request, Chirp $chirp)
     {
-        //
+        $this->authorize('update', $chirp);
+ 
+        $validated = $request->validate([
+            'message' => 'required|string|max:255',
+        ]);
+ 
+        $chirp->update($validated);
+        Toast::title('Chirp Updated!')
+            ->autoDismiss(1);
+ 
+        return redirect()->route('chirps.index');
     }
 
     /**
@@ -80,6 +101,13 @@ class ChirpController extends Controller
      */
     public function destroy(Chirp $chirp)
     {
-        //
+        $this->authorize('delete', $chirp);
+ 
+        $chirp->delete();
+        Toast::title('Chirp Deleted!')
+            ->danger()
+            ->autoDismiss(1);
+ 
+        return redirect()->back();
     }
 }
