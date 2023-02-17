@@ -41,7 +41,7 @@ Route::middleware('splade')->group(function () {
         
         // Leads
         Route::resource('leads', LeadsController::class)
-        ->only(['index']);
+        ->only(['index', 'create']);
     });
     
     
