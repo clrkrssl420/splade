@@ -16,9 +16,16 @@ class LeadsController extends Controller
 {
     public function index()
     {
+        
+        $user_id = auth()->user()->id;
 
-        $leads = Lead::with(['lead_status'])->paginate();
+        $leads = Lead::where(['user_id'=>$user_id])
+                     ->with(['lead_status', 'user'])
+                     ->paginate();
+
         // $leads = Lead::all();
+
+
 
         return view('leads.index', [
             'leads' => SpladeTable::for($leads)
@@ -34,9 +41,9 @@ class LeadsController extends Controller
 
         $users = User::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        // $lead_statuses = LeadStatus::pluck('status', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $lead_statuses = LeadStatus::pluck('status', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        return view('admin.leads.create', compact('lead_statuses', 'users'));
+        return view('leads.create', compact('lead_statuses', 'users'));
     }
 
     public function store(StoreLeadRequest $request)
