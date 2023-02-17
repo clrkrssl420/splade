@@ -15,17 +15,13 @@
         <link href="{{ URL::asset('assets/css/nucleo-icons.css') }}" rel="stylesheet" />
         <link href="{{ URL::asset('assets/css/nucleo-svg.css') }}" rel="stylesheet" />
         {{-- Main Argon CSS --}}
-        <link href="{{ URL::asset('assets/css/argon-dashboard-tailwind.css') }}" rel="stylesheet" />
+        <link href="{{ URL::asset('assets/css/argon-dashboard-tailwind.css?v=1.0.1') }}" rel="stylesheet" />
 
         <!-- Scripts -->
         @vite(['resources/js/app.js'])
         @spladeHead
     </head>
-    <body class="font-sans antialiased">
+    <body class="m-0 font-sans text-base antialiased font-normal bg-slate-200">
         @splade
-        {{-- Perfect Scrollbar --}}
-        <script src="{{ URL::asset('assets/js/perfect-scrollbar.js') }}" async></script>
-        <!-- main script file  -->
-        <script src="{{ URL::asset('assets/js/argon-dashboard-tailwind.js') }}" async></script>
     </body>
 </html>
