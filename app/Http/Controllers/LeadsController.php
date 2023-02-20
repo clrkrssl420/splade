@@ -4,10 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Lead;
 use App\Models\User;
+use App\Models\LeadStatus;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\LeadStatus;
 use ProtoneMedia\Splade\SpladeTable;
+use ProtoneMedia\Splade\Facades\Toast;
 use App\Http\Requests\StoreLeadRequest;
 use App\Http\Requests\UpdateLeadRequest;
 use Symfony\Component\HttpFoundation\Response;
@@ -44,6 +45,62 @@ class LeadsController extends Controller
         $lead_statuses = LeadStatus::pluck('status', 'id')->prepend(trans('global.pleaseSelect'), '');
 
         return view('leads.create', compact('lead_statuses', 'users'));
+    }
+
+    public function check(Request $request)
+    {
+
+        $this->validate($request, [
+            'phone' => 'required'
+        ]);
+
+        $checkphone = $request->phone;
+
+        $phone = preg_replace("/[^0-9]/", '', $checkphone);
+        if (strlen($phone) == 11) $phone = preg_replace("/^1/", '',$phone);
+
+        if (strlen($phone) != 10) {
+
+            Toast::title('Whoops!')
+            ->message('You entered an invalid phone number.')
+            ->warning()
+            ->autoDismiss(3);
+
+            return back();
+        }
+
+        $p = $phone;
+
+        $lead = new Lead;
+        $lead->phone = $p;
+
+        $record = false;
+        $check = false;
+
+        if(!$request->phone == '') {
+            try {
+                $q = Lead::where('phone', $p) -> first();
+                if($q->phone == $p) {
+                    $lead = $q;
+                    $record = true;
+                } else {
+
+                }
+            } catch(\Exception $e) {
+
+                 $check = true;
+                 return redirect('leads/create', compact('phone'));
+            }
+        } else {
+            return back();
+        }
+
+        Toast::title('Whoops!')
+            ->message('Phone number already exists.')
+            ->warning()
+            ->autoDismiss(3);
+
+        return view('leads.check', compact('lead'));
     }
 
     public function store(StoreLeadRequest $request)

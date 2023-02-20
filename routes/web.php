@@ -40,8 +40,9 @@ Route::middleware('splade')->group(function () {
         Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
         
         // Leads
-        Route::resource('leads', LeadsController::class)
-        ->only(['index', 'create']);
+        Route::resource('leads', LeadsController::class);
+
+        Route::post('leads/check', [LeadsController::class, 'check'])->name('leads.check');
     });
     
     
