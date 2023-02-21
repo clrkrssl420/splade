@@ -41,7 +41,6 @@ Route::middleware('splade')->group(function () {
         
         // Leads
         Route::resource('leads', LeadsController::class);
-
         Route::post('leads/check', [LeadsController::class, 'check'])->name('leads.check');
     });
     

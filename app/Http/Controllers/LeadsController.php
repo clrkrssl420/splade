@@ -89,7 +89,8 @@ class LeadsController extends Controller
             } catch(\Exception $e) {
 
                  $check = true;
-                 return redirect('leads/create', compact('phone'));
+                 
+                 return redirect()->route('leads.create')->with('phone', $p);
             }
         } else {
             return back();
@@ -100,14 +101,14 @@ class LeadsController extends Controller
             ->warning()
             ->autoDismiss(3);
 
-        return view('leads.check', compact('lead'));
+        return back();
     }
 
     public function store(StoreLeadRequest $request)
     {
         $lead = Lead::create($request->all());
 
-        return redirect()->route('admin.leads.index');
+        return redirect()->route('leads.index');
     }
 
     public function edit(Lead $lead)
