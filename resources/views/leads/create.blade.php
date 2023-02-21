@@ -3,14 +3,11 @@
         Create Leads
     </x-slot>
     <x-splade-modal>
-        <div class="py-12">
+        <div class="py-8">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white mb-5 overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 bg-white">
-                        <h2 class="text-3xl font-medium text-gray-900 mb-4">Add New Lead</h2>
-                        @php
-                            $id = Auth::user()->id;
-                        @endphp
+                        <h2 class="text-xl font-medium text-gray-900 mb-4">Add New Lead</h2>
                         <x-splade-form :action="route('leads.store')" method="POST" class="space-y-4" :default="['user_id' => Auth::user()->id, 'lead_status_id' => '1']">
                             <x-splade-input name="phone" label="Phone Number" placeholder="Enter 11 digits company phone number" required/>
                             <x-splade-textarea name="description" label="Description" autoresize required/>

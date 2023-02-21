@@ -29,7 +29,8 @@ class LeadsController extends Controller
                 ->column('id')
                 ->column('phone')
                 ->column('description')
-                ->column('lead_status_id', 'Status'),
+                ->column('lead_status_id', 'Status')
+                ->column('action'),
         ]);
     }
 
@@ -100,27 +101,31 @@ class LeadsController extends Controller
 
     public function edit(Lead $lead)
     {
-
-        $users = User::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        // $lead_statuses = LeadStatus::pluck('status', 'id')->prepend(trans('global.pleaseSelect'), '');
-
+        $lead_statuses = LeadStatus::pluck('status', 'id');
+    
         $lead->load('user', 'lead_status');
 
-        return view('admin.leads.edit', compact('lead', 'lead_statuses', 'users'));
+        return view('leads.edit', compact('lead', 'lead_statuses'));
     }
 
     public function update(UpdateLeadRequest $request, Lead $lead)
     {
         $lead->update($request->all());
 
-        return redirect()->route('admin.leads.index');
+        Toast::title('Lead updated successfully!')
+            ->autoDismiss(3);
+
+        return redirect()->route('leads.index');
     }
 
     public function destroy(Lead $lead)
     {
 
         $lead->delete();
+
+        Toast::title('Lead successfully deleted!')
+        ->danger()
+        ->autoDismiss(3);
 
         return back();
     }
