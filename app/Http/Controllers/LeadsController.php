@@ -36,6 +36,7 @@ class LeadsController extends Controller
 
         $leads = QueryBuilder::for(Lead::class)
                             ->where(['user_id'=>$user_id])
+                            ->where(['lead_status_id'=>'1'])
                             ->with(['lead_status', 'user'])
                             ->defaultSort('-id')
                             ->allowedSorts('phone', 'lead_status_id', 'created_at')
@@ -51,7 +52,6 @@ class LeadsController extends Controller
                 ->withGlobalSearch()
                 ->column('phone', sortable: true)
                 ->column('description', sortable: true)
-                ->column('lead_status_id', 'Lead Status')
                 ->column('created_at', 'Date Added', sortable: true)
                 ->column('action', canBeHidden: false),
         ]);
@@ -138,7 +138,7 @@ class LeadsController extends Controller
         Toast::title('Lead updated successfully!')
             ->autoDismiss(3);
 
-        return redirect()->route('leads.index');
+        return back();
     }
 
     public function destroy(Lead $lead)
@@ -151,5 +151,77 @@ class LeadsController extends Controller
         ->autoDismiss(3);
 
         return back();
+    }
+
+    public function prospects()
+    {
+        $user_id = auth()->user()->id;
+
+        $globalSearch = AllowedFilter::callback('global', function ($query, $value) {
+            $query->where(function ($query) use ($value) {
+                Collection::wrap($value)->each(function ($value) use ($query) {
+                    $query
+                        ->orWhere('phone', 'LIKE', "%{$value}%");
+                });
+            });
+        });
+
+        $leads = QueryBuilder::for(Lead::class)
+                            ->where(['user_id'=>$user_id])
+                            ->where(['lead_status_id'=>'3'])
+                            ->with(['lead_status', 'user'])
+                            ->defaultSort('-id')
+                            ->allowedSorts('phone', 'lead_status_id', 'created_at')
+                            ->allowedFilters($globalSearch)
+                            ->paginate()
+                            ->withQueryString();
+
+        // $leads = Lead::all();
+
+        return view('leads.index', [
+            'leads' => SpladeTable::for($leads)
+                ->defaultSort('-id')
+                ->withGlobalSearch()
+                ->column('phone', sortable: true)
+                ->column('description', sortable: true, canBeHidden: false)
+                ->column('created_at', 'Date Added', sortable: true)
+                ->column('action', canBeHidden: false),
+        ]);
+    }
+
+    public function all()
+    {
+        $user_id = auth()->user()->id;
+
+        $globalSearch = AllowedFilter::callback('global', function ($query, $value) {
+            $query->where(function ($query) use ($value) {
+                Collection::wrap($value)->each(function ($value) use ($query) {
+                    $query
+                        ->orWhere('phone', 'LIKE', "%{$value}%");
+                });
+            });
+        });
+
+        $leads = QueryBuilder::for(Lead::class)
+                            ->where(['user_id'=>$user_id])
+                            ->with(['lead_status', 'user'])
+                            ->defaultSort('-id')
+                            ->allowedSorts('phone', 'lead_status_id', 'created_at')
+                            ->allowedFilters($globalSearch)
+                            ->paginate()
+                            ->withQueryString();
+
+        // $leads = Lead::all();
+
+        return view('leads.index', [
+            'leads' => SpladeTable::for($leads)
+                ->defaultSort('-id')
+                ->withGlobalSearch()
+                ->column('phone', sortable: true)
+                ->column('description', sortable: true, canBeHidden: false)
+                ->column('lead_status_id', 'Lead Status')
+                ->column('created_at', 'Date Added', sortable: true)
+                ->column('action', canBeHidden: false),
+        ]);
     }
 }
