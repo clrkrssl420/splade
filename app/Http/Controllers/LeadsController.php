@@ -6,9 +6,12 @@ use App\Models\Lead;
 use App\Models\User;
 use App\Models\LeadStatus;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use App\Http\Controllers\Controller;
 use ProtoneMedia\Splade\SpladeTable;
+use Spatie\QueryBuilder\QueryBuilder;
 use ProtoneMedia\Splade\Facades\Toast;
+use Spatie\QueryBuilder\AllowedFilter;
 use App\Http\Requests\StoreLeadRequest;
 use App\Http\Requests\UpdateLeadRequest;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,19 +21,39 @@ class LeadsController extends Controller
     public function index()
     {
         $user_id = auth()->user()->id;
-        $leads = Lead::where(['user_id'=>$user_id])
-                     ->with(['lead_status', 'user'])
-                     ->paginate();
+        // $leads = Lead::where(['user_id'=>$user_id])
+        //              ->with(['lead_status', 'user'])
+        //              ->paginate();
+
+        $globalSearch = AllowedFilter::callback('global', function ($query, $value) {
+            $query->where(function ($query) use ($value) {
+                Collection::wrap($value)->each(function ($value) use ($query) {
+                    $query
+                        ->orWhere('phone', 'LIKE', "%{$value}%")
+                        ->orWhere('description', 'LIKE', "%{$value}%");
+                });
+            });
+        });
+
+        $leads = QueryBuilder::for(Lead::class)
+                            ->where(['user_id'=>$user_id])
+                            ->with(['lead_status', 'user'])
+                            ->defaultSort('-id')
+                            ->allowedSorts('phone', 'description', 'lead_status_id')
+                            ->allowedFilters($globalSearch)
+                            ->paginate()
+                            ->withQueryString();
 
         // $leads = Lead::all();
 
         return view('leads.index', [
             'leads' => SpladeTable::for($leads)
-                ->column('id')
-                ->column('phone')
-                ->column('description')
-                ->column('lead_status_id', 'Status')
-                ->column('action'),
+                ->defaultSort('-id')
+                ->withGlobalSearch()
+                ->column('phone', sortable: true)
+                ->column('description', sortable: true)
+                ->column('lead_status_id', 'Lead Status', sortable: true)
+                ->column('action', canBeHidden: false),
         ]);
     }
 
