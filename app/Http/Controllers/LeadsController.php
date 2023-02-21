@@ -17,16 +17,12 @@ class LeadsController extends Controller
 {
     public function index()
     {
-        
         $user_id = auth()->user()->id;
-
         $leads = Lead::where(['user_id'=>$user_id])
                      ->with(['lead_status', 'user'])
                      ->paginate();
 
         // $leads = Lead::all();
-
-
 
         return view('leads.index', [
             'leads' => SpladeTable::for($leads)
@@ -39,17 +35,11 @@ class LeadsController extends Controller
 
     public function create()
     {
-
-        $users = User::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        $lead_statuses = LeadStatus::pluck('status', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        return view('leads.create', compact('lead_statuses', 'users'));
+        return view('leads.create');
     }
 
-    public function check(Request $request)
+    public function store(StoreLeadRequest $request)
     {
-
         $this->validate($request, [
             'phone' => 'required'
         ]);
@@ -58,7 +48,6 @@ class LeadsController extends Controller
 
         $phone = preg_replace("/[^0-9]/", '', $checkphone);
         if (strlen($phone) == 11) $phone = preg_replace("/^1/", '',$phone);
-
         if (strlen($phone) != 10) {
 
             Toast::title('Whoops!')
@@ -88,9 +77,14 @@ class LeadsController extends Controller
                 }
             } catch(\Exception $e) {
 
-                 $check = true;
-                 
-                 return redirect()->route('leads.create')->with('phone', $p);
+                $check = true;
+                $lead = Lead::create($request->all());
+
+                Toast::title('Congrats!')
+                    ->message('New lead added.')
+                    ->autoDismiss(3);
+
+                return redirect()->route('leads.index');
             }
         } else {
             return back();
@@ -102,13 +96,6 @@ class LeadsController extends Controller
             ->autoDismiss(3);
 
         return back();
-    }
-
-    public function store(StoreLeadRequest $request)
-    {
-        $lead = Lead::create($request->all());
-
-        return redirect()->route('leads.index');
     }
 
     public function edit(Lead $lead)
