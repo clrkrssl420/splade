@@ -11,7 +11,8 @@
         "laravel/sanctum": "^3.0",
         "laravel/tinker": "^2.7",
         "protonemedia/laravel-splade-breeze": "^2.3",
-        "spatie/laravel-permission": "^5.9"
+        "spatie/laravel-permission": "^5.9",
+        "spatie/laravel-query-builder": "^5.1"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.8",
