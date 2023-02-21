@@ -3,12 +3,16 @@
         My Leads
     </x-slot>
 
-    <div class="py-12">
+    <div class="pt-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <Link modal href="{{ route('leads.create') }}" class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded" >Add New Lead</Link> 
+        </div>
+    </div>
+    <div class="pt-4">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
-                    <Link modal href="{{ route('leads.create') }}" class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded mb-4" >Add New Lead</Link>
-                    <x-splade-table :for="$leads" as="$lead">
+                    <x-splade-table :for="$leads" as="$lead" striped>
                         <x-splade-cell lead_status_id>
                             {{ $lead->lead_status->status ?? ''}}
                         </x-splade-cell>
