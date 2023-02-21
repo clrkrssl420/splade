@@ -29,8 +29,7 @@ class LeadsController extends Controller
             $query->where(function ($query) use ($value) {
                 Collection::wrap($value)->each(function ($value) use ($query) {
                     $query
-                        ->orWhere('phone', 'LIKE', "%{$value}%")
-                        ->orWhere('description', 'LIKE', "%{$value}%");
+                        ->orWhere('phone', 'LIKE', "%{$value}%");
                 });
             });
         });
@@ -39,7 +38,7 @@ class LeadsController extends Controller
                             ->where(['user_id'=>$user_id])
                             ->with(['lead_status', 'user'])
                             ->defaultSort('-id')
-                            ->allowedSorts('phone', 'description', 'lead_status_id')
+                            ->allowedSorts('phone', 'lead_status_id', 'created_at')
                             ->allowedFilters($globalSearch)
                             ->paginate()
                             ->withQueryString();
@@ -52,7 +51,8 @@ class LeadsController extends Controller
                 ->withGlobalSearch()
                 ->column('phone', sortable: true)
                 ->column('description', sortable: true)
-                ->column('lead_status_id', 'Lead Status', sortable: true)
+                ->column('lead_status_id', 'Lead Status')
+                ->column('created_at', 'Date Added', sortable: true)
                 ->column('action', canBeHidden: false),
         ]);
     }
