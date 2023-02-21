@@ -13,6 +13,12 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
                     <x-splade-table :for="$leads" as="$lead" striped>
+                        <x-splade-cell phone>
+                            <?php 
+                                $from = $lead->phone; 
+                                $formatedphone = sprintf("%s-%s-%s", substr($from, 0, 3), substr($from, 3, 3), substr($from, 6)); ?>
+                                <a href="tel:{{ $lead->phone }}" class="text-blue-400 hover:text-blue-800">{{ $formatedphone }}</a>
+                        </x-splade-cell>
                         <x-splade-cell lead_status_id>
                             {{ $lead->lead_status->status ?? ''}}
                         </x-splade-cell>
