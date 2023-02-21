@@ -10,7 +10,7 @@
                         <h2 class="text-xl font-medium text-gray-900 mb-4">Add New Lead</h2>
                         <x-splade-form :action="route('leads.store')" method="POST" class="space-y-4" :default="['user_id' => Auth::user()->id, 'lead_status_id' => '1']">
                             <x-splade-input name="phone" label="Phone Number" placeholder="Enter 11 digits company phone number" required/>
-                            <x-splade-textarea name="description" label="Description" autoresize required/>
+                            <x-splade-textarea name="description" label="Description" autosize required/>
                             <x-splade-input type="hidden" name="user_id" />
                             <x-splade-input type="hidden" name="lead_status_id" />
                             <x-splade-submit>Create Lead</x-splade-submit>

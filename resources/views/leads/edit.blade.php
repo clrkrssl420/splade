@@ -11,7 +11,7 @@
                         <h2 class="text-3xl font-medium text-gray-900 mb-4">{{ $lead->phone }}</h2>
                         <x-splade-form :action="route('leads.update', [$lead->id] )" method="PUT" class="space-y-4" :default="$lead">
                             <x-splade-input type="hidden" name="phone" label="Phone Number"/>
-                            <x-splade-textarea name="description" label="Description" autoresize/>
+                            <x-splade-textarea name="description" label="Description" autosize/>
                             <x-splade-input type="hidden" name="user_id" />
                             <x-splade-input type="hidden" name="lead_status_id" />
                             <x-splade-select name="lead_status_id" label="Status" :options="$lead_statuses" />
