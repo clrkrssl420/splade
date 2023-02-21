@@ -23,13 +23,13 @@
                             {{ $lead->lead_status->status ?? ''}}
                         </x-splade-cell>
                         <x-splade-cell action>
-                            <Link modal href="{{ route('leads.edit', $lead->id) }}" class="text-blue-400 hover:text-blue-800">Edit</Link>
+                            <Link modal href="{{ route('leads.edit', $lead->id) }}" class="text-blue-400 mr-1 hover:text-blue-800">Edit</Link>
                             <Link
                                 confirm="Delete Lead?"
                                 confirm-button="Yes"
                                 cancel-button="No"
                                 href="{{ route('leads.destroy', $lead->id) }}"
-                                class="text-red-500 hover:text-red-700"
+                                class="text-red-500 ml-1 hover:text-red-700"
                                 method="DELETE">
                                 Delete
                             </Link>
