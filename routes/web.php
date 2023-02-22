@@ -52,15 +52,7 @@ Route::middleware('splade')->group(function () {
     Route::middleware('auth', 'role:admin')->group(function () {
         Route::get('/admin/dashboard', function () {
             return view('admin.dashboard');
-        })->middleware(['verified'])->name('admin.dashboard');
-
-        // Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-        // Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-        // Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-        
-        // // Leads
-        // Route::resource('leads', LeadsController::class);
-        // Route::post('leads/check', [LeadsController::class, 'check'])->name('leads.check');
+        })->name('admin.dashboard');
     });
     
     
