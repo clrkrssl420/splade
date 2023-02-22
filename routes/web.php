@@ -6,17 +6,6 @@ use App\Http\Controllers\LeadsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\PermissionsController;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
-
 Route::middleware('splade')->group(function () {
     // Registers routes to support password confirmation in Form and Link components...
     Route::spladePasswordConfirmation();
@@ -28,7 +17,7 @@ Route::middleware('splade')->group(function () {
     Route::spladeUploads();
 
     Route::get('/', function () {
-        return view('welcome');
+        return view('auth.login');
     });
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -49,7 +38,7 @@ Route::middleware('splade')->group(function () {
 
     // Admin
     
-    Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['auth']], function () {
+    Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['auth', 'admin']], function () {
         Route::get('/dashboard', function () {
                     return view('admin.dashboard');
                 })->name('dashboard');
