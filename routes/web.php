@@ -2,8 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ChirpController;
-use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\LeadsController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Admin\PermissionsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,31 +31,32 @@ Route::middleware('splade')->group(function () {
         return view('welcome');
     });
 
-    Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::group(['prefix' => 'agent', 'as' => 'agent.', 'middleware' => ['auth']], function () {
         Route::get('/dashboard', function () {
             return view('dashboard');
-        })->middleware(['verified'])->name('dashboard');
-
-        Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-        Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-        Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+        })->name('dashboard');
         
         // Leads
         Route::post('leads/check', [LeadsController::class, 'check'])->name('leads.check');
         Route::get('leads/prospects', [LeadsController::class, 'prospects'])->name('leads.prospects');
         Route::get('leads/all', [LeadsController::class, 'all'])->name('leads.all');
         Route::resource('leads', LeadsController::class);
-    
     });
 
     // Admin
-
-    Route::middleware('auth')->group(function () {
-        Route::get('/admin/dashboard', function () {
-            return view('admin.dashboard');
-        })->name('admin.dashboard');
-    });
     
+    Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['auth']], function () {
+        Route::get('/dashboard', function () {
+                    return view('admin.dashboard');
+                })->name('dashboard');
+
+        Route::delete('permissions/destroy', [PermissionsController::class, 'massDestroy'])->name('permissions.massDestroy');
+        Route::resource('permissions', PermissionsController::class);
+    });
     
     Route::resource('chirps', ChirpController::class)
     ->only(['index', 'store', 'edit', 'update', 'destroy'])
