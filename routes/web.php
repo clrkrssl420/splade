@@ -49,7 +49,7 @@ Route::middleware('splade')->group(function () {
 
     // Admin
 
-    Route::middleware('auth', 'role:admin')->group(function () {
+    Route::middleware('auth')->group(function () {
         Route::get('/admin/dashboard', function () {
             return view('admin.dashboard');
         })->name('admin.dashboard');
