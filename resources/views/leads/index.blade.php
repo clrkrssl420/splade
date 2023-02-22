@@ -5,7 +5,7 @@
 
     <div class="pt-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <Link modal href="{{ route('leads.create') }}" class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded" >Add New Lead</Link> 
+            <Link modal href="{{ route('agent.leads.create') }}" class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded" >Add New Lead</Link> 
         </div>
     </div>
     <div class="pt-4">

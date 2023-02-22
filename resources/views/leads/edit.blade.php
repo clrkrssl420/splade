@@ -9,7 +9,7 @@
                     <div class="p-6 bg-white">
                         <h3 class="text-xl font-medium text-gray-900 mb-4">Edit Lead</h3>
                         <h2 class="text-3xl font-medium text-gray-900 mb-4">{{ $lead->phone }}</h2>
-                        <x-splade-form :action="route('leads.update', [$lead->id] )" method="PUT" class="space-y-4" :default="$lead">
+                        <x-splade-form :action="route('agent.leads.update', [$lead->id] )" method="PUT" class="space-y-4" :default="$lead">
                             <x-splade-input type="hidden" name="phone" label="Phone Number"/>
                             <x-splade-textarea name="description" label="Description" autosize/>
                             <x-splade-input type="hidden" name="user_id" />
