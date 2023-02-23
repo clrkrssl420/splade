@@ -108,7 +108,7 @@ class LeadsController extends Controller
                     ->message('New lead added.')
                     ->autoDismiss(3);
 
-                return redirect()->route('leads.index');
+                return redirect()->route('agent.leads.index');
             }
         } else {
             return back();
