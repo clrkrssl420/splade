@@ -4,7 +4,10 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ChirpController;
 use App\Http\Controllers\LeadsController;
 use App\Http\Controllers\ProfileController;
+
+// Admin
 use App\Http\Controllers\Admin\PermissionsController;
+use App\Http\Controllers\Admin\AdminProfileController;
 
 Route::middleware('splade')->group(function () {
     // Registers routes to support password confirmation in Form and Link components...
@@ -45,8 +48,14 @@ Route::middleware('splade')->group(function () {
                     return view('admin.dashboard');
                 })->name('dashboard');
 
+        // Permissions
         Route::delete('permissions/destroy', [PermissionsController::class, 'massDestroy'])->name('permissions.massDestroy');
         Route::resource('permissions', PermissionsController::class);
+
+        // Profile
+        Route::get('/profile', [AdminProfileController::class, 'edit'])->name('profile.edit');
+        Route::patch('/profile', [AdminProfileController::class, 'update'])->name('profile.update');
+        Route::delete('/profile', [AdminProfileController::class, 'destroy'])->name('profile.destroy');
     });
     
     Route::resource('chirps', ChirpController::class)
