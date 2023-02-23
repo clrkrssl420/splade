@@ -50,7 +50,7 @@ class UsersController extends Controller
                 ->withGlobalSearch()
                 ->column('id', sortable: true)
                 ->column('name', sortable: true, canBeHidden: false)
-                ->column('email', sortable: true, canBeHidden: false)
+                ->column('email', canBeHidden: false)
                 ->column('role')
                 ->column('action', canBeHidden: false),
         ]);
