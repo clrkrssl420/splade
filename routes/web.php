@@ -1,11 +1,14 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+
+// Agent
 use App\Http\Controllers\ChirpController;
 use App\Http\Controllers\LeadsController;
 use App\Http\Controllers\ProfileController;
 
 // Admin
+use App\Http\Controllers\Admin\RolesController;
 use App\Http\Controllers\Admin\UsersController;
 use App\Http\Controllers\Admin\PermissionsController;
 use App\Http\Controllers\Admin\AdminProfileController;
@@ -50,7 +53,10 @@ Route::middleware('splade')->group(function () {
                 })->name('dashboard');
 
         // Users
-        Route::resource('users', UsersController::class);        
+        Route::resource('users', UsersController::class);
+        
+        // Roles
+        Route::resource('roles', RolesController::class);
 
         // Permissions
         Route::resource('permissions', PermissionsController::class);
