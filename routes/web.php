@@ -20,13 +20,10 @@ Route::middleware('splade')->group(function () {
         return view('auth.login');
     });
 
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
+    
     Route::group(['prefix' => 'agent', 'as' => 'agent.', 'middleware' => ['auth']], function () {
         Route::get('/dashboard', function () {
-            return view('dashboard');
+            return view('agent.dashboard');
         })->name('dashboard');
         
         // Leads
@@ -34,6 +31,11 @@ Route::middleware('splade')->group(function () {
         Route::get('leads/prospects', [LeadsController::class, 'prospects'])->name('leads.prospects');
         Route::get('leads/all', [LeadsController::class, 'all'])->name('leads.all');
         Route::resource('leads', LeadsController::class);
+
+        // Profile
+        Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+        Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     });
 
     // Admin

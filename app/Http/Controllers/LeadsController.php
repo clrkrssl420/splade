@@ -46,7 +46,7 @@ class LeadsController extends Controller
 
         // $leads = Lead::all();
 
-        return view('leads.index', [
+        return view('agent.leads.index', [
             'leads' => SpladeTable::for($leads)
                 ->defaultSort('-id')
                 ->withGlobalSearch()
@@ -59,7 +59,7 @@ class LeadsController extends Controller
 
     public function create()
     {
-        return view('leads.create');
+        return view('agent.leads.create');
     }
 
     public function store(StoreLeadRequest $request)
@@ -128,7 +128,7 @@ class LeadsController extends Controller
     
         $lead->load('user', 'lead_status');
 
-        return view('leads.edit', compact('lead', 'lead_statuses'));
+        return view('agent.leads.edit', compact('lead', 'lead_statuses'));
     }
 
     public function update(UpdateLeadRequest $request, Lead $lead)
@@ -178,7 +178,7 @@ class LeadsController extends Controller
 
         // $leads = Lead::all();
 
-        return view('leads.index', [
+        return view('agent.leads.index', [
             'leads' => SpladeTable::for($leads)
                 ->defaultSort('-id')
                 ->withGlobalSearch()
@@ -213,7 +213,7 @@ class LeadsController extends Controller
 
         // $leads = Lead::all();
 
-        return view('leads.index', [
+        return view('agent.leads.index', [
             'leads' => SpladeTable::for($leads)
                 ->defaultSort('-id')
                 ->withGlobalSearch()
