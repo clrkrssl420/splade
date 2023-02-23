@@ -6,6 +6,7 @@ use App\Http\Controllers\LeadsController;
 use App\Http\Controllers\ProfileController;
 
 // Admin
+use App\Http\Controllers\Admin\UsersController;
 use App\Http\Controllers\Admin\PermissionsController;
 use App\Http\Controllers\Admin\AdminProfileController;
 
@@ -47,6 +48,9 @@ Route::middleware('splade')->group(function () {
         Route::get('/dashboard', function () {
                     return view('admin.dashboard');
                 })->name('dashboard');
+
+        // Users
+        Route::resource('users', UsersController::class);        
 
         // Permissions
         Route::resource('permissions', PermissionsController::class);
