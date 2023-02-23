@@ -19,7 +19,7 @@
                         <x-splade-cell action>
                             <Link modal href="{{ route('admin.permissions.edit', $permission->id) }}" class="text-blue-400 mr-1 hover:text-blue-800">Edit</Link>
                             <Link
-                                confirm="Delete Lead?"
+                                confirm="Delete Permission?"
                                 confirm-button="Yes"
                                 cancel-button="No"
                                 href="{{ route('admin.permissions.destroy', $permission->id) }}"
