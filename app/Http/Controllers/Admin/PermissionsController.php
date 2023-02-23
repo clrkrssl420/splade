@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Gate;
+use App\Models\Permission;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\MassDestroyPermissionRequest;
+use ProtoneMedia\Splade\SpladeTable;
+use Spatie\QueryBuilder\QueryBuilder;
+use ProtoneMedia\Splade\Facades\Toast;
 use App\Http\Requests\StorePermissionRequest;
 use App\Http\Requests\UpdatePermissionRequest;
-use App\Models\Permission;
-use Gate;
-use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class PermissionsController extends Controller
@@ -16,10 +18,22 @@ class PermissionsController extends Controller
     public function index()
     {
         abort_if(Gate::denies('permission_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        
+        $permissions = QueryBuilder::for(Permission::class)
+                            ->defaultSort('id')
+                            ->allowedSorts('id', 'title')
+                            ->paginate()
+                            ->withQueryString();
 
-        $permissions = Permission::all();
+        // $leads = Lead::all();
 
-        return view('admin.permissions.index', compact('permissions'));
+        return view('admin.permissions.index', [
+            'permissions' => SpladeTable::for($permissions)
+                ->defaultSort('id')
+                ->column('id', sortable: true)
+                ->column('title', sortable: true, canBeHidden: false)
+                ->column('action', canBeHidden: false),
+        ]);
     }
 
     public function create()
@@ -32,6 +46,9 @@ class PermissionsController extends Controller
     public function store(StorePermissionRequest $request)
     {
         $permission = Permission::create($request->all());
+
+        Toast::title('New Permission Created!')
+            ->autoDismiss(3);
 
         return redirect()->route('admin.permissions.index');
     }
@@ -47,7 +64,10 @@ class PermissionsController extends Controller
     {
         $permission->update($request->all());
 
-        return redirect()->route('admin.permissions.index');
+        Toast::title('Permission Updated!')
+            ->autoDismiss(3);
+
+        return back();
     }
 
     public function show(Permission $permission)
@@ -63,13 +83,10 @@ class PermissionsController extends Controller
 
         $permission->delete();
 
+        Toast::title('Permission Removed!')
+            ->danger()
+            ->autoDismiss(3);
+
         return back();
-    }
-
-    public function massDestroy(MassDestroyPermissionRequest $request)
-    {
-        Permission::whereIn('id', request('ids'))->delete();
-
-        return response(null, Response::HTTP_NO_CONTENT);
     }
 }

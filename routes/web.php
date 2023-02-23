@@ -49,7 +49,6 @@ Route::middleware('splade')->group(function () {
                 })->name('dashboard');
 
         // Permissions
-        Route::delete('permissions/destroy', [PermissionsController::class, 'massDestroy'])->name('permissions.massDestroy');
         Route::resource('permissions', PermissionsController::class);
 
         // Profile

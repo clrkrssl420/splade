@@ -1,33 +1,20 @@
-@extends('layouts.admin')
-@section('content')
-
-<div class="card">
-    <div class="card-header">
-        {{ trans('global.create') }} {{ trans('cruds.permission.title_singular') }}
-    </div>
-
-    <div class="card-body">
-        <form method="POST" action="{{ route("admin.permissions.store") }}" enctype="multipart/form-data">
-            @csrf
-            <div class="form-group">
-                <label class="required" for="title">{{ trans('cruds.permission.fields.title') }}</label>
-                <input class="form-control {{ $errors->has('title') ? 'is-invalid' : '' }}" type="text" name="title" id="title" value="{{ old('title', '') }}" required>
-                @if($errors->has('title'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('title') }}
+<x-app-layout>
+    <x-slot name="header">
+        Create Permission
+    </x-slot>
+    <x-splade-modal>
+        <div class="py-8">
+            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <div class="bg-white mb-5 overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6 bg-white">
+                        <h2 class="text-xl font-medium text-gray-900 mb-4">Create New Permission</h2>
+                        <x-splade-form :action="route('admin.permissions.store')" method="POST" class="space-y-4">
+                            <x-splade-input name="title" label="Title" placeholder="Permission" required/>
+                            <x-splade-submit>Create Permission</x-splade-submit>
+                        </x-splade-form>
                     </div>
-                @endif
-                <span class="help-block">{{ trans('cruds.permission.fields.title_helper') }}</span>
+                </div>
             </div>
-            <div class="form-group">
-                <button class="btn btn-danger" type="submit">
-                    {{ trans('global.save') }}
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
-
-
-
-@endsection
+        </div>
+    </x-splade-modal>
+</x-app-layout>
