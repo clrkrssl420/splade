@@ -31,7 +31,7 @@
             <li class="mt-0.5 w-full">
                 <Link href="{{ route('agent.leads.prospects') }}" class="py-2.7 dark:text-white dark:opacity-80 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap rounded-lg px-4 font-semibold text-slate-700 transition-colors {{ request()->is("agent/leads/prospects") ? "bg-blue-500/13" : "" }}">
                 <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-center stroke-0 text-center xl:p-2.5">
-                    <i class="relative top-0 text-sm leading-normal text-blue-500 ni ni-satisfied"></i>
+                    <i class="relative top-0 text-sm leading-normal text-blue-500 ni ni-circle-08"></i>
                 </div>
                 <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Prospects</span>
                 </Link>
@@ -40,7 +40,7 @@
             <li class="mt-0.5 w-full">
                 <Link href="{{ route('agent.leads.all') }}" class="py-2.7 dark:text-white dark:opacity-80 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap rounded-lg px-4 font-semibold text-slate-700 transition-colors {{ request()->is("agent/leads/all") ? "bg-blue-500/13" : "" }}">
                 <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-center stroke-0 text-center xl:p-2.5">
-                    <i class="relative top-0 text-sm leading-normal text-blue-500 ni ni-satisfied"></i>
+                    <i class="relative top-0 text-sm leading-normal text-blue-500 ni ni-world-2"></i>
                 </div>
                 <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">All Leads</span>
                 </Link>
@@ -53,7 +53,7 @@
             <li class="mt-0.5 w-full">
                 <Link href="{{ route('agent.profile.edit') }}" class="dark:text-white dark:opacity-80 py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors {{ request()->is("agent/profile") || request()->is("agent/profile/*") ? "bg-blue-500/13" : "" }}">
                 <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-center stroke-0 text-center xl:p-2.5">
-                    <i class="relative top-0 text-sm leading-normal text-blue-500 ni ni-single-02"></i>
+                    <i class="relative top-0 text-sm leading-normal text-slate-700 ni ni-single-02"></i>
                 </div>
                 <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Profile</span>
                 </Link>
@@ -64,7 +64,7 @@
                     @csrf
                     <a class=" dark:text-white dark:opacity-80 py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors" href="{{ route('logout') }}" onclick="event.preventDefault(); this.closest('form').submit();">
                         <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-center stroke-0 text-center xl:p-2.5">
-                            <i class="relative top-0 text-sm leading-normal text-blue-500 ni ni-button-power"></i>
+                            <i class="relative top-0 text-sm leading-normal text-slate-700 ni ni-button-power"></i>
                         </div>
                         <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Logout</span>
                     </a>
