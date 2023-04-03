@@ -3,11 +3,6 @@
         My Leads
     </x-slot>
 
-    <div class="pt-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <Link modal href="{{ route('agent.leads.create') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" >Add New Lead</Link> 
-        </div>
-    </div>
     <div class="pt-4">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg dark:bg-slate-900">

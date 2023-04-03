@@ -52,17 +52,23 @@ class LeadsController extends Controller
                 ->withGlobalSearch()
                 ->column('phone', sortable: true)
                 ->column('description', sortable: true)
-                ->column('created_at', 'Date Added', sortable: true)
                 ->column('action', canBeHidden: false),
         ]);
     }
 
     public function create()
     {
-        return view('agent.leads.create');
+        $phone =  session('phone');
+
+        if($phone == '') {
+            return redirect('/dashboard');
+            // return back();
+        }
+
+        return view('agent.leads.create')->with('phone', $phone );
     }
 
-    public function store(StoreLeadRequest $request)
+    public function check(Request $request)
     {
         $this->validate($request, [
             'phone' => 'required'
@@ -72,8 +78,8 @@ class LeadsController extends Controller
 
         $phone = preg_replace("/[^0-9]/", '', $checkphone);
         if (strlen($phone) == 11) $phone = preg_replace("/^1/", '',$phone);
-        if (strlen($phone) != 10) {
 
+        if (strlen($phone) != 10) {
             Toast::title('Whoops!')
             ->message('You entered an invalid phone number.')
             ->warning()
@@ -102,13 +108,13 @@ class LeadsController extends Controller
             } catch(\Exception $e) {
 
                 $check = true;
-                $lead = Lead::create($request->all());
+                // $lead = Lead::create($request->all());
 
-                Toast::title('Congrats!')
-                    ->message('New lead added.')
-                    ->autoDismiss(3);
+                // Toast::title('Congrats!')
+                //     ->message('New lead added.')
+                //     ->autoDismiss(3);
 
-                return redirect()->route('agent.leads.index');
+                return redirect()->route('agent.leads.create')->with('phone', $p);
             }
         } else {
             return back();
@@ -120,6 +126,16 @@ class LeadsController extends Controller
             ->autoDismiss(3);
 
         return back();
+    }
+
+    public function store(StoreLeadRequest $request)
+    {
+        $lead = Lead::create($request->all());
+
+        Toast::title('Success, new lead added!')
+            ->autoDismiss(3);
+
+        return redirect()->route('dashboard');
     }
 
     public function edit(Lead $lead)
@@ -184,7 +200,6 @@ class LeadsController extends Controller
                 ->withGlobalSearch()
                 ->column('phone', sortable: true)
                 ->column('description', sortable: true, canBeHidden: false)
-                ->column('created_at', 'Date Added', sortable: true)
                 ->column('action', canBeHidden: false),
         ]);
     }
@@ -214,6 +229,40 @@ class LeadsController extends Controller
         // $leads = Lead::all();
 
         return view('agent.leads.index', [
+            'leads' => SpladeTable::for($leads)
+                ->defaultSort('-id')
+                ->withGlobalSearch()
+                ->column('phone', sortable: true)
+                ->column('description', sortable: true, canBeHidden: false)
+                ->column('lead_status_id', 'Lead Status')
+                ->column('action', canBeHidden: false),
+        ]);
+    }
+
+    public function recent()
+    {
+        $user_id = auth()->user()->id;
+
+        $globalSearch = AllowedFilter::callback('global', function ($query, $value) {
+            $query->where(function ($query) use ($value) {
+                Collection::wrap($value)->each(function ($value) use ($query) {
+                    $query
+                        ->orWhere('phone', 'LIKE', "%{$value}%");
+                });
+            });
+        });
+
+        $leads = QueryBuilder::for(Lead::class)
+                            ->where(['user_id'=>$user_id])
+                            ->where('created_at', '>=', now()->subDays(7)) // filters leads added within the last 7 days
+                            ->with(['lead_status', 'user'])
+                            ->defaultSort('-id')
+                            ->allowedSorts('phone', 'lead_status_id', 'created_at')
+                            ->allowedFilters($globalSearch)
+                            ->paginate()
+                            ->withQueryString();
+
+        return view('agent.dashboard', [
             'leads' => SpladeTable::for($leads)
                 ->defaultSort('-id')
                 ->withGlobalSearch()

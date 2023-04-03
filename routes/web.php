@@ -33,9 +33,7 @@ Route::middleware('splade')->group(function () {
 
     
     Route::group(['prefix' => 'agent', 'as' => 'agent.', 'middleware' => ['auth']], function () {
-        Route::get('/dashboard', function () {
-            return view('agent.dashboard');
-        })->name('dashboard');
+        Route::get('/dashboard', [LeadsController::class, 'recent'])->name('dashboard');
         
         // Leads
         Route::post('leads/check', [LeadsController::class, 'check'])->name('leads.check');
