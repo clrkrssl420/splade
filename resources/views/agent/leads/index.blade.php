@@ -5,14 +5,14 @@
 
     <div class="pt-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <Link modal href="{{ route('agent.leads.create') }}" class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded" >Add New Lead</Link> 
+            <Link modal href="{{ route('agent.leads.create') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" >Add New Lead</Link> 
         </div>
     </div>
     <div class="pt-4">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 bg-white border-b border-gray-200">
-                    <x-splade-table :for="$leads" as="$lead" striped>
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg dark:bg-slate-900">
+                <div class="p-6 bg-white border-b border-gray-200 dark:bg-slate-900">
+                    <x-splade-table :for="$leads" as="$lead" striped class="dark:bg-slate-900">
                         <x-splade-cell phone>
                             <?php 
                                 $from = $lead->phone; 
