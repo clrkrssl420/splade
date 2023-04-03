@@ -3,7 +3,6 @@
 use Illuminate\Support\Facades\Route;
 
 // Agent
-use App\Http\Controllers\ChirpController;
 use App\Http\Controllers\LeadsController;
 use App\Http\Controllers\ProfileController;
 
@@ -26,6 +25,11 @@ Route::middleware('splade')->group(function () {
     Route::get('/', function () {
         return view('auth.login');
     });
+
+    Route::get('/dashboard', function () {
+        $prefix = auth()->user()->is_admin ? 'admin' : 'agent';
+        return redirect()->route($prefix . '.dashboard');
+    })->name('dashboard');
 
     
     Route::group(['prefix' => 'agent', 'as' => 'agent.', 'middleware' => ['auth']], function () {
