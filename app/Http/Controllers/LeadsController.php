@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Lead;
 use App\Models\User;
 use App\Models\LeadStatus;
@@ -52,6 +53,7 @@ class LeadsController extends Controller
                 ->withGlobalSearch()
                 ->column('phone', sortable: true)
                 ->column('description', sortable: true)
+                ->column('created_at', 'Date Added', sortable: true)
                 ->column('action', canBeHidden: false),
         ]);
     }
@@ -132,10 +134,11 @@ class LeadsController extends Controller
     {
         $lead = Lead::create($request->all());
 
-        Toast::title('Success, new lead added!')
+        Toast::title('Success!')
+            ->message('New lead added.')
             ->autoDismiss(3);
 
-        return redirect()->route('dashboard');
+        return redirect()->route('agent.dashboard');
     }
 
     public function edit(Lead $lead)
@@ -222,11 +225,12 @@ class LeadsController extends Controller
                             ->with(['lead_status', 'user'])
                             ->defaultSort('-id')
                             ->allowedSorts('phone', 'lead_status_id', 'created_at')
-                            ->allowedFilters($globalSearch)
+                            ->allowedFilters('lead_status_id', $globalSearch)
                             ->paginate()
                             ->withQueryString();
 
-        // $leads = Lead::all();
+        $lead_statuses = LeadStatus::pluck('status', 'id')->toArray();
+
 
         return view('agent.leads.index', [
             'leads' => SpladeTable::for($leads)
@@ -235,6 +239,7 @@ class LeadsController extends Controller
                 ->column('phone', sortable: true)
                 ->column('description', sortable: true, canBeHidden: false)
                 ->column('lead_status_id', 'Lead Status')
+                ->selectFilter('lead_status_id', $lead_statuses)
                 ->column('action', canBeHidden: false),
         ]);
     }
@@ -254,21 +259,23 @@ class LeadsController extends Controller
 
         $leads = QueryBuilder::for(Lead::class)
                             ->where(['user_id'=>$user_id])
-                            ->where('created_at', '>=', now()->subDays(7)) // filters leads added within the last 7 days
+                            ->where('created_at', '>=', today()) // filters leads added within the last 7 days
                             ->with(['lead_status', 'user'])
                             ->defaultSort('-id')
                             ->allowedSorts('phone', 'lead_status_id', 'created_at')
-                            ->allowedFilters($globalSearch)
+                            ->allowedFilters('lead_status_id', $globalSearch)
                             ->paginate()
                             ->withQueryString();
 
-        return view('agent.dashboard', [
+        $lead_statuses = LeadStatus::pluck('status', 'id')->toArray();
+        return view('agent.leads.index', [
             'leads' => SpladeTable::for($leads)
                 ->defaultSort('-id')
                 ->withGlobalSearch()
                 ->column('phone', sortable: true)
                 ->column('description', sortable: true, canBeHidden: false)
                 ->column('lead_status_id', 'Lead Status')
+                ->selectFilter('lead_status_id', $lead_statuses)
                 ->column('created_at', 'Date Added', sortable: true)
                 ->column('action', canBeHidden: false),
         ]);
