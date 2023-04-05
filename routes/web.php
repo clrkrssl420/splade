@@ -33,10 +33,13 @@ Route::middleware('splade')->group(function () {
 
     
     Route::group(['prefix' => 'agent', 'as' => 'agent.', 'middleware' => ['auth']], function () {
-        Route::get('/dashboard', [LeadsController::class, 'recent'])->name('dashboard');
+        Route::get('/dashboard', function () {
+            return view('agent.dashboard');
+        })->name('dashboard');
         
         // Leads
         Route::post('leads/check', [LeadsController::class, 'check'])->name('leads.check');
+        Route::get('leads/recent', [LeadsController::class, 'recent'])->name('leads.recent');
         Route::get('leads/prospects', [LeadsController::class, 'prospects'])->name('leads.prospects');
         Route::get('leads/all', [LeadsController::class, 'all'])->name('leads.all');
         Route::resource('leads', LeadsController::class);
