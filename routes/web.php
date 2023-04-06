@@ -42,6 +42,7 @@ Route::middleware('splade')->group(function () {
         Route::get('leads/recent', [LeadsController::class, 'recent'])->name('leads.recent');
         Route::get('leads/prospects', [LeadsController::class, 'prospects'])->name('leads.prospects');
         Route::get('leads/all', [LeadsController::class, 'all'])->name('leads.all');
+        Route::get('leads/team', [LeadsController::class, 'team'])->name('leads.team');
         Route::resource('leads', LeadsController::class);
 
         // Profile

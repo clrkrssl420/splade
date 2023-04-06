@@ -55,6 +55,17 @@
                 </Link>
             </li>
 
+            @if (auth()->user()->isTeamLeader())
+                <li class="mt-0.5 w-full">
+                    <Link href="{{ route('agent.leads.team') }}" class="py-2.7 dark:text-white dark:opacity-80 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap rounded-lg px-4 font-semibold text-slate-700 transition-colors {{ request()->is("agent/leads/team") ? "bg-blue-500/13" : "" }}">
+                    <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-center stroke-0 text-center xl:p-2.5">
+                        <i class="relative top-0 text-sm leading-normal text-blue-500 ni ni-world-2"></i>
+                    </div>
+                    <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Team Leads</span>
+                    </Link>
+                </li>
+            @endif
+            
             <li class="w-full mt-4">
                 <h6 class="pl-6 ml-2 text-l font-bold leading-tight uppercase dark:text-white opacity-60">{{ Auth::user()->name }}</h6>
             </li>
