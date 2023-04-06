@@ -8,6 +8,7 @@ use App\Http\Controllers\ProfileController;
 
 // Admin
 use App\Http\Controllers\Admin\RolesController;
+use App\Http\Controllers\Admin\TeamsController;
 use App\Http\Controllers\Admin\UsersController;
 use App\Http\Controllers\Admin\PermissionsController;
 use App\Http\Controllers\Admin\AdminProfileController;
@@ -60,6 +61,9 @@ Route::middleware('splade')->group(function () {
 
         // Users
         Route::resource('users', UsersController::class);
+
+        //Teams
+        Route::resource('teams', TeamsController::class);
         
         // Roles
         Route::resource('roles', RolesController::class);
