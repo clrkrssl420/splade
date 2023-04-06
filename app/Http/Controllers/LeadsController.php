@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Carbon\Carbon;
 use App\Models\Lead;
-use App\Models\User;
 use App\Models\LeadStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -22,9 +20,6 @@ class LeadsController extends Controller
     public function index()
     {
         $user_id = auth()->user()->id;
-        // $leads = Lead::where(['user_id'=>$user_id])
-        //              ->with(['lead_status', 'user'])
-        //              ->paginate();
 
         $globalSearch = AllowedFilter::callback('global', function ($query, $value) {
             $query->where(function ($query) use ($value) {
@@ -195,8 +190,6 @@ class LeadsController extends Controller
                             ->paginate()
                             ->withQueryString();
 
-        // $leads = Lead::all();
-
         return view('agent.leads.index', [
             'leads' => SpladeTable::for($leads)
                 ->defaultSort('-id')
@@ -230,7 +223,6 @@ class LeadsController extends Controller
                             ->withQueryString();
 
         $lead_statuses = LeadStatus::pluck('status', 'id')->toArray();
-
 
         return view('agent.leads.index', [
             'leads' => SpladeTable::for($leads)
@@ -298,30 +290,27 @@ class LeadsController extends Controller
                             ->whereHas('user', function ($query) use ($user) {
                                 $query->whereIn('id', $user->teams()->with('users')->get()->pluck('users.*.id')->flatten());
                             })
+                            ->where(['lead_status_id'=>'3'])
                             ->with('lead_status:id,status', 'user:id,name')
                             ->defaultSort('-id')
-                            ->allowedSorts('phone', 'lead_status_id', 'created_at')
+                            ->allowedSorts('phone', 'created_at')
                             ->allowedFilters([
-                                'lead_status_id',
                                 $globalSearch,
                                 AllowedFilter::exact('user_id'), // <-- Add this line
                             ])
                             ->paginate()
                             ->withQueryString();
 
-        $lead_statuses = LeadStatus::pluck('status', 'id')->toArray();
-
         $team = auth()->user()->teams()->first(); // get the team of the logged-in user
         $user_names = $team->users()->pluck('name', 'id')->toArray(); // get the users of the team
         return view('agent.leads.index', [
             'leads' => SpladeTable::for($leads)
-                ->defaultSort('-id')
+                ->defaultSort('created_at')
                 ->withGlobalSearch()
                 ->column('phone', sortable: true)
-                ->column('description', sortable: true, canBeHidden: false)
+                ->column('description')
                 ->column('lead_status_id', 'Lead Status')
                 ->column('user_id', 'Added By')
-                ->selectFilter('lead_status_id', $lead_statuses)
                 ->selectFilter('user_id', $user_names)
                 ->column('created_at', 'Date Added', sortable: true)
                 ->column('action', canBeHidden: false),
