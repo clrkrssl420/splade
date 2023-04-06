@@ -2,10 +2,18 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Gate;
 use App\Models\Team;
 use App\Models\User;
-use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use App\Http\Controllers\Controller;
+use ProtoneMedia\Splade\SpladeTable;
+use Spatie\QueryBuilder\QueryBuilder;
+use ProtoneMedia\Splade\Facades\Toast;
+use Spatie\QueryBuilder\AllowedFilter;
+use App\Http\Requests\StoreTeamRequest;
+use App\Http\Requests\UpdateTeamRequest;
+use Symfony\Component\HttpFoundation\Response;
 
 class TeamsController extends Controller
 {
@@ -16,9 +24,34 @@ class TeamsController extends Controller
      */
     public function index()
     {
-        $teams = Team::with(['team_leader', 'members'])->get();
+        abort_if(Gate::denies('user_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        return view('admin.teams.index', compact('teams'));
+        $globalSearch = AllowedFilter::callback('global', function ($query, $value) {
+            $query->where(function ($query) use ($value) {
+                Collection::wrap($value)->each(function ($value) use ($query) {
+                    $query
+                        ->orWhere('team_name', 'LIKE', "%{$value}%");
+                });
+            });
+        });
+
+        $teams = QueryBuilder::for(Team::class)
+                            ->with('team_leader', 'users')
+                            ->defaultSort('id')
+                            ->allowedSorts('id', 'name')
+                            ->allowedFilters($globalSearch)
+                            ->paginate()
+                            ->withQueryString();
+
+        return view('admin.teams.index', [
+            'teams' => SpladeTable::for($teams)
+                ->defaultSort('id')
+                ->withGlobalSearch()
+                ->column('team_name', sortable: true, canBeHidden: false)
+                ->column('team_leader_id', 'Team Leader', canBeHidden: false)
+                ->column('users', 'Members', canBeHidden: false)
+                ->column('action', canBeHidden: false),
+        ]);
     }
 
     /**
@@ -28,11 +61,10 @@ class TeamsController extends Controller
      */
     public function create()
     {
-        $team_leaders = User::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $team_leaders = User::pluck('name', 'id')->toArray();
+        $users = User::pluck('name', 'id')->toArray();
 
-        $members = User::pluck('name', 'id');
-
-        return view('admin.teams.create', compact('members', 'team_leaders'));
+        return view('admin.teams.create', compact('users', 'team_leaders'));
     }
 
     /**
@@ -44,22 +76,16 @@ class TeamsController extends Controller
     public function store(StoreTeamRequest $request)
     {
         $team = Team::create($request->all());
-        $team->members()->sync($request->input('members', []));
 
+        $teamLeaderId = $request->input('team_leader_id');
+        $team->users()->attach($teamLeaderId);
+        $team->users()->syncWithoutDetaching($request->input('users', []));
+
+        Toast::title('Success!')
+            ->message('New team added.')
+            ->autoDismiss(3);
+            
         return redirect()->route('admin.teams.index');
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Team $team)
-    {
-        $team->load('team_leader', 'members', 'teamSales');
-
-        return view('admin.teams.show', compact('team'));
     }
 
     /**
@@ -70,13 +96,12 @@ class TeamsController extends Controller
      */
     public function edit(Team $team)
     {
-        $team_leaders = User::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $team_leaders = User::pluck('name', 'id')->toArray();
+        $users = User::pluck('name', 'id')->toArray();
 
-        $members = User::pluck('name', 'id');
+        $team->load('team_leader', 'users');
 
-        $team->load('team_leader', 'members');
-
-        return view('admin.teams.edit', compact('members', 'team', 'team_leaders'));
+        return view('admin.teams.edit', compact('users', 'team', 'team_leaders'));
     }
 
     /**
@@ -89,7 +114,11 @@ class TeamsController extends Controller
     public function update(UpdateTeamRequest $request, Team $team)
     {
         $team->update($request->all());
-        $team->members()->sync($request->input('members', []));
+        $team->users()->sync($request->input('users', []));
+
+        Toast::title('Success!')
+            ->message('Team updated successfully.')
+            ->autoDismiss(3);
 
         return redirect()->route('admin.teams.index');
     }
@@ -103,6 +132,11 @@ class TeamsController extends Controller
     public function destroy(Team $team)
     {
         $team->delete();
+
+        Toast::title('Success!')
+            ->message('Team deleted.')
+            ->warning()
+            ->autoDismiss(3);
 
         return back();
     }
