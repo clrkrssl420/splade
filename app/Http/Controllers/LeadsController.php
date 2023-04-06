@@ -280,4 +280,51 @@ class LeadsController extends Controller
                 ->column('action', canBeHidden: false),
         ]);
     }
+
+    public function team()
+    {
+        $user = auth()->user();
+
+        $globalSearch = AllowedFilter::callback('global', function ($query, $value) {
+            $query->where(function ($query) use ($value) {
+                Collection::wrap($value)->each(function ($value) use ($query) {
+                    $query
+                        ->orWhere('phone', 'LIKE', "%{$value}%");
+                });
+            });
+        });
+
+        $leads = QueryBuilder::for(Lead::class)
+                            ->whereHas('user', function ($query) use ($user) {
+                                $query->whereIn('id', $user->teams()->with('users')->get()->pluck('users.*.id')->flatten());
+                            })
+                            ->with('lead_status:id,status', 'user:id,name')
+                            ->defaultSort('-id')
+                            ->allowedSorts('phone', 'lead_status_id', 'created_at')
+                            ->allowedFilters([
+                                'lead_status_id',
+                                $globalSearch,
+                                AllowedFilter::exact('user_id'), // <-- Add this line
+                            ])
+                            ->paginate()
+                            ->withQueryString();
+
+        $lead_statuses = LeadStatus::pluck('status', 'id')->toArray();
+
+        $team = auth()->user()->teams()->first(); // get the team of the logged-in user
+        $user_names = $team->users()->pluck('name', 'id')->toArray(); // get the users of the team
+        return view('agent.leads.index', [
+            'leads' => SpladeTable::for($leads)
+                ->defaultSort('-id')
+                ->withGlobalSearch()
+                ->column('phone', sortable: true)
+                ->column('description', sortable: true, canBeHidden: false)
+                ->column('lead_status_id', 'Lead Status')
+                ->column('user_id', 'Added By')
+                ->selectFilter('lead_status_id', $lead_statuses)
+                ->selectFilter('user_id', $user_names)
+                ->column('created_at', 'Date Added', sortable: true)
+                ->column('action', canBeHidden: false),
+        ]);
+    }
 }
