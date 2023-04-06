@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use Gate;
 use App\Models\Role;
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use App\Http\Controllers\Controller;
 use ProtoneMedia\Splade\SpladeTable;
@@ -14,7 +13,6 @@ use ProtoneMedia\Splade\Facades\Toast;
 use Spatie\QueryBuilder\AllowedFilter;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
-use App\Http\Requests\MassDestroyUserRequest;
 use Symfony\Component\HttpFoundation\Response;
 
 class UsersController extends Controller
