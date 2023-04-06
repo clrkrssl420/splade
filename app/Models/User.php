@@ -62,8 +62,14 @@ class User extends Authenticatable
         return $this->belongsToMany(Role::class);
     }
 
-    public function chirps()
+    public function teams()
     {
-        return $this->hasMany(Chirp::class);
+        return $this->belongsToMany(Team::class);
+    }
+
+    public function isTeamLeader()
+    {
+        $team = $this->teams()->first();
+        return $team && $team->team_leader_id == $this->id;
     }
 }
