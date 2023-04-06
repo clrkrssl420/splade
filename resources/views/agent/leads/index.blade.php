@@ -17,6 +17,9 @@
                         <x-splade-cell lead_status_id>
                             {{ $lead->lead_status->status ?? ''}}
                         </x-splade-cell>
+                        <x-splade-cell user_id>
+                            {{ $lead->user->name ?? ''}}
+                        </x-splade-cell>
                         <x-splade-cell action>
                             <Link modal href="{{ route('agent.leads.edit', $lead->id) }}" class="text-blue-400 mr-1 hover:text-blue-800">Edit</Link>
                             <Link
