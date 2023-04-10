@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        My Leads
+        Leads
     </x-slot>
 
     <div class="pt-4">
