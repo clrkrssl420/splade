@@ -149,7 +149,8 @@ class LeadsController extends Controller
     {
         $lead->update($request->all());
 
-        Toast::title('Lead updated successfully!')
+        Toast::title('Success!')
+            ->message('Lead updated.')
             ->autoDismiss(3);
 
         return back();
@@ -160,9 +161,10 @@ class LeadsController extends Controller
 
         $lead->delete();
 
-        Toast::title('Lead successfully deleted!')
-        ->danger()
-        ->autoDismiss(3);
+        Toast::title('Success!')
+            ->message('Lead deleted.')
+            ->warning()
+            ->autoDismiss(3);
 
         return back();
     }
@@ -309,8 +311,7 @@ class LeadsController extends Controller
                 ->withGlobalSearch()
                 ->column('phone', sortable: true)
                 ->column('description')
-                ->column('lead_status_id', 'Lead Status')
-                ->column('user_id', 'Added By')
+                ->column('user_id', 'Agent')
                 ->selectFilter('user_id', $user_names)
                 ->column('updated_at', 'Updated On', sortable: true)
                 ->column('action', canBeHidden: false),
