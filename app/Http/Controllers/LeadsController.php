@@ -293,7 +293,7 @@ class LeadsController extends Controller
                             ->where(['lead_status_id'=>'3'])
                             ->with('lead_status:id,status', 'user:id,name')
                             ->defaultSort('-id')
-                            ->allowedSorts('phone', 'created_at')
+                            ->allowedSorts('phone', 'updated_at')
                             ->allowedFilters([
                                 $globalSearch,
                                 AllowedFilter::exact('user_id'), // <-- Add this line
@@ -305,14 +305,14 @@ class LeadsController extends Controller
         $user_names = $team->users()->pluck('name', 'id')->toArray(); // get the users of the team
         return view('agent.leads.index', [
             'leads' => SpladeTable::for($leads)
-                ->defaultSort('created_at')
+                ->defaultSort('-updated_at')
                 ->withGlobalSearch()
                 ->column('phone', sortable: true)
                 ->column('description')
                 ->column('lead_status_id', 'Lead Status')
                 ->column('user_id', 'Added By')
                 ->selectFilter('user_id', $user_names)
-                ->column('created_at', 'Date Added', sortable: true)
+                ->column('updated_at', 'Updated On', sortable: true)
                 ->column('action', canBeHidden: false),
         ]);
     }
