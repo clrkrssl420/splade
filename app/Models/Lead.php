@@ -47,11 +47,11 @@ class Lead extends Model
 
     public function getUpdatedAtAttribute($value)
     {
-        return \DateTime::createFromFormat('Y-m-d H:i:s', $value)->format('Y-M-d');
+        return \DateTime::createFromFormat('Y-m-d H:i:s', $value)->format('M-d-Y');
     }
 
-    public function getCreated4AtAttribute($value)
+    public function getCreatedAtAttribute($value)
     {
-        return \DateTime::createFromFormat('Y-m-d H:i:s', $value)->format('Y-M-d');
+        return \DateTime::createFromFormat('Y-m-d H:i:s', $value)->format('M-d-Y');
     }
 }
