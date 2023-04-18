@@ -47,7 +47,7 @@ class LeadsController extends Controller
                 ->defaultSort('-id')
                 ->withGlobalSearch()
                 ->column('phone', sortable: true)
-                ->column('description', sortable: true)
+                ->column('description')
                 ->column('created_at', 'Date Added', sortable: true)
                 ->column('action', canBeHidden: false),
         ]);
@@ -197,7 +197,7 @@ class LeadsController extends Controller
                 ->defaultSort('-id')
                 ->withGlobalSearch()
                 ->column('phone', sortable: true)
-                ->column('description', sortable: true, canBeHidden: false)
+                ->column('description', canBeHidden: false)
                 ->column('updated_at', 'Last Updated On', sortable: true)
                 ->column('action', canBeHidden: false),
         ]);
@@ -232,7 +232,7 @@ class LeadsController extends Controller
                 ->defaultSort('-id')
                 ->withGlobalSearch()
                 ->column('phone', sortable: true)
-                ->column('description', sortable: true, canBeHidden: false)
+                ->column('description', canBeHidden: false)
                 ->column('lead_status_id', 'Lead Status')
                 ->selectFilter('lead_status_id', $lead_statuses)
                 ->column('action', canBeHidden: false),
@@ -268,7 +268,7 @@ class LeadsController extends Controller
                 ->defaultSort('-id')
                 ->withGlobalSearch()
                 ->column('phone', sortable: true)
-                ->column('description', sortable: true, canBeHidden: false)
+                ->column('description', canBeHidden: false)
                 ->column('lead_status_id', 'Lead Status')
                 ->selectFilter('lead_status_id', $lead_statuses)
                 ->column('created_at', 'Date Added', sortable: true)
