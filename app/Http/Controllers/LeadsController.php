@@ -187,7 +187,7 @@ class LeadsController extends Controller
                             ->where(['lead_status_id'=>'3'])
                             ->with(['lead_status', 'user'])
                             ->defaultSort('-id')
-                            ->allowedSorts('phone', 'lead_status_id', 'created_at')
+                            ->allowedSorts('phone', 'lead_status_id', 'updated_at')
                             ->allowedFilters($globalSearch)
                             ->paginate()
                             ->withQueryString();
@@ -198,6 +198,7 @@ class LeadsController extends Controller
                 ->withGlobalSearch()
                 ->column('phone', sortable: true)
                 ->column('description', sortable: true, canBeHidden: false)
+                ->column('updated_at', 'Last Updated On', sortable: true)
                 ->column('action', canBeHidden: false),
         ]);
     }
@@ -313,7 +314,7 @@ class LeadsController extends Controller
                 ->column('description')
                 ->column('user_id', 'Agent')
                 ->selectFilter('user_id', $user_names)
-                ->column('updated_at', 'Updated On', sortable: true)
+                ->column('updated_at', 'Last Updated On', sortable: true)
                 ->column('action', canBeHidden: false),
         ]);
     }
